@@ -4,225 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RiftStats — Competitive Riftbound</title>
-  <meta name="description" content="The competitive Riftbound hub. Event calendar, matchup data, and guides — everything in one place." />
+  <meta name="description" content="Competitive Riftbound hub. Event calendar, expert matchup data, and guides." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="shared.css" />
   <style>
 
-    /* ── HOME LAYOUT ── */
-    .page {
-      max-width: 1280px; margin: 0 auto;
-      padding: 1.75rem 2rem 0;
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+    /* ── PRIMARY LINKS ── */
+    .primary-links {
       display: grid;
-      grid-template-columns: 1fr 280px;
-      gap: 2.5rem;
-      align-items: start;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
     }
-
-    /* ── EVENTS CALENDAR ── */
-    .calendar { min-width: 0; }
-
-    /* Tier legend */
-    .tier-legend {
-      display: flex; gap: 1.25rem; flex-wrap: wrap;
-      margin-bottom: 1.25rem;
+    .primary-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; text-decoration: none; color: var(--text);
+      transition: border-color 0.12s, background 0.12s;
+      position: relative; overflow: hidden;
     }
-    .tier-pip {
-      display: flex; align-items: center; gap: 0.4rem;
-      font-size: 0.68rem; color: var(--muted);
+    .primary-link::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.15s;
+    }
+    .primary-link:hover { border-color: var(--accent); background: var(--surface2); }
+    .primary-link:hover::before { transform: scaleX(1); }
+    .primary-link-label {
       font-family: 'Rajdhani', sans-serif;
-      font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.04em;
     }
-    .tier-pip-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    .primary-link-sub {
+      font-size: 0.72rem; color: var(--muted);
+      display: block; margin-top: 0.1rem;
     }
+    .primary-link-arrow { color: var(--accent); font-size: 1rem; }
 
-    /* Filter tabs */
-    .filter-tabs {
-      display: flex; gap: 0.25rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+    /* ── NEWS ── */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
     }
-    .filter-tab {
-      background: none; border: 1px solid var(--border);
-      color: var(--muted); cursor: pointer;
-      font-family: 'Rajdhani', sans-serif; font-size: 0.7rem;
-      font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.3rem 0.7rem; border-radius: 3px;
-      transition: all 0.12s;
+    .news-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1rem;
     }
-    .filter-tab:hover { color: var(--text); border-color: var(--dim); }
-    .filter-tab.active {
-      color: #fff; border-color: var(--accent); background: var(--accent);
-    }
-
-    /* Calendar table */
-    .cal-table {
-      width: 100%; border-collapse: collapse;
-    }
-
-    .cal-table thead tr {
-      border-bottom: 2px solid var(--border);
-    }
-    .cal-table th {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.65rem; font-weight: 700;
-      letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--muted); padding: 0 0.75rem 0.6rem;
-      text-align: left;
-    }
-    .cal-table th:first-child { padding-left: 1rem; }
-    .cal-table th.right { text-align: right; }
-
-    .cal-table tbody tr {
-      border-bottom: 1px solid var(--border-dim);
-      transition: background 0.1s;
-      cursor: default;
-    }
-    .cal-table tbody tr:hover { background: var(--surface); }
-    .cal-table tbody tr.has-link { cursor: pointer; }
-
-    .cal-table td {
-      padding: 0.7rem 0.75rem;
-      vertical-align: middle;
-    }
-    .cal-table td:first-child {
-      padding-left: 0;
-    }
-
-    /* Tier stripe — left border accent */
-    .tier-stripe {
-      width: 3px; padding: 0 !important;
-      border-radius: 2px;
-    }
-    .tier-stripe-inner {
-      width: 3px; height: 100%;
-      min-height: 36px; border-radius: 1px;
-    }
-
-    /* Date cell */
-    .cal-date {
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-    }
-    .cal-date-primary {
-      font-size: 0.82rem; font-weight: 600; color: var(--text);
-      display: block;
-    }
-    .cal-date-secondary {
-      font-size: 0.68rem; color: var(--dim); display: block;
-    }
-
-    /* Event name cell */
-    .cal-name { min-width: 200px; }
-    .cal-name-primary {
+    .news-card h4 {
       font-family: 'Rajdhani', sans-serif;
       font-size: 0.95rem; font-weight: 700;
-      color: var(--text); display: block; line-height: 1.2;
-      margin-bottom: 0.1rem;
+      line-height: 1.25; margin-bottom: 0.4rem; color: var(--text);
     }
-    .cal-name-note {
-      font-size: 0.68rem; color: var(--muted);
-      font-style: italic;
-    }
-
-    /* Tier badge */
-    .tier-badge {
-      display: inline-block;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.62rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.15rem 0.45rem; border-radius: 2px;
-      white-space: nowrap;
-    }
-
-    /* Location cell */
-    .cal-location {
-      font-size: 0.78rem; color: var(--muted);
-      white-space: nowrap;
-    }
-    .cal-country {
-      font-size: 0.65rem; color: var(--dim); display: block;
-    }
-
-    /* Prize cell */
-    .cal-prize {
-      font-size: 0.82rem; font-weight: 600;
-      color: var(--gold); text-align: right;
-      white-space: nowrap;
-    }
-    .cal-prize-none { color: var(--dim); }
-
-    /* Link indicator */
-    .cal-link-icon {
-      color: var(--dim); font-size: 0.75rem;
-      text-align: right; white-space: nowrap;
-    }
-    .cal-table tbody tr.has-link:hover .cal-link-icon { color: var(--accent); }
-
-    /* Month divider */
-    .cal-month-row td {
-      padding: 1rem 0 0.4rem;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--dim); border-bottom: none;
-      background: none !important;
-    }
-    .cal-month-row:hover { background: none !important; cursor: default; }
-
-    /* Past events */
-    .cal-table tbody tr.past { opacity: 0.4; }
-
-    /* Empty state */
-    .cal-empty {
-      padding: 2rem; text-align: center;
-      color: var(--muted); font-size: 0.85rem;
-    }
-
-    /* ── SIDEBAR ── */
-    .sidebar {
-      position: sticky; top: 68px;
-    }
-
-    .sidebar-section { margin-bottom: 2rem; }
-
-    /* Quick links */
-    .quick-links {
-      display: flex; flex-direction: column; gap: 0.4rem;
-    }
-    .quick-link {
+    .news-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+    .news-card a { color: var(--accent); text-decoration: none; }
+    .news-card a:hover { text-decoration: underline; }
+    .news-card-footer {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0.6rem 0.75rem;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 4px; text-decoration: none; color: var(--text);
-      font-size: 0.82rem; font-weight: 500;
-      transition: border-color 0.12s, background 0.12s;
+      margin-top: 0.6rem;
     }
-    .quick-link:hover { border-color: var(--accent); background: var(--surface2); }
-    .quick-link-arrow { color: var(--accent); font-size: 0.75rem; }
+    .news-date { font-size: 0.68rem; color: var(--dim); }
 
-    /* ── GUIDES SECTION ── */
-    .guides-section {
-      grid-column: 1 / -1;
-      margin-top: 1rem;
-      padding-top: 1.75rem;
-      border-top: 1px solid var(--border);
-    }
-
+    /* ── GUIDES ── */
     .guides-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 0.75rem;
-      margin-top: 1rem;
+      gap: 0.75rem; margin-top: 1rem;
     }
-
     .guide-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 6px; padding: 1rem;
-      text-decoration: none; color: inherit;
-      display: block; position: relative; overflow: hidden;
+      text-decoration: none; color: inherit; display: block;
+      position: relative; overflow: hidden;
       transition: border-color 0.12s, transform 0.12s;
     }
     .guide-card::before {
@@ -236,7 +95,6 @@
     }
     .guide-card:hover:not(.coming-soon)::before { transform: scaleX(1); }
     .guide-card.coming-soon { opacity: 0.45; pointer-events: none; }
-
     .guide-tier {
       font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem;
@@ -254,15 +112,30 @@
     }
     .guide-status.live { color: var(--win-text); background: var(--win); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 860px) {
-      .page { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.25rem 1rem 0; }
-      .sidebar { position: static; }
-      .guides-section { grid-column: 1; }
-      .cal-table th.hide-mobile,
-      .cal-table td.hide-mobile { display: none; }
+    /* ── SECTION ── */
+    .section { margin-bottom: 2.5rem; }
+    .section-header {
+      display: flex; align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1rem; padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
     }
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-link {
+      font-size: 0.72rem; color: var(--accent);
+      text-decoration: none; letter-spacing: 0.04em;
+    }
+    .section-link:hover { opacity: 0.7; }
 
+    @media (max-width: 700px) {
+      .primary-links { grid-template-columns: 1fr; }
+      .page { padding: 1.25rem 1rem 3rem; }
+    }
   </style>
 </head>
 <body>
@@ -272,7 +145,7 @@
     <span class="nav-brand-rift">Rift</span><span class="nav-brand-stats">Stats</span>
   </a>
   <ul class="nav-links">
-    <li><a href="index.html" class="active">Events</a></li>
+    <li><a href="events.html">Events</a></li>
     <li><a href="matchup.html">Matchup Chart</a></li>
     <li><a href="guides/index.html">Guides</a></li>
   </ul>
@@ -280,345 +153,139 @@
 
 <div class="page">
 
-  <!-- ── MAIN: EVENTS CALENDAR ── -->
-  <main class="calendar">
+  <!-- PRIMARY LINKS -->
+  <div class="primary-links">
+    <a class="primary-link" href="events.html">
+      <div>
+        <div class="primary-link-label">Competitive Calendar</div>
+        <span class="primary-link-sub">RQs, Showdowns, CCS, Majors</span>
+      </div>
+      <span class="primary-link-arrow">→</span>
+    </a>
+    <a class="primary-link" href="matchup.html">
+      <div>
+        <div class="primary-link-label">Matchup Chart</div>
+        <span class="primary-link-sub">Expert-curated Bo3 rates</span>
+      </div>
+      <span class="primary-link-arrow">→</span>
+    </a>
+    <a class="primary-link" href="https://locator.riftbound.uvsgames.com/" target="_blank" rel="noopener">
+      <div>
+        <div class="primary-link-label">UVS Event Locator ↗</div>
+        <span class="primary-link-sub">Find locals near you</span>
+      </div>
+      <span class="primary-link-arrow">→</span>
+    </a>
+  </div>
 
+  <!-- NEWS -->
+  <section class="section">
     <div class="section-header">
-      <span class="section-title">Competitive Calendar 2026</span>
+      <span class="section-title">News</span>
     </div>
+    <div class="news-grid">
 
-    <!-- Tier legend -->
-    <div class="tier-legend">
-      <div class="tier-pip">
-        <div class="tier-pip-dot" style="background:var(--tier-rq)"></div>
-        Regional Qualifier
-      </div>
-      <div class="tier-pip">
-        <div class="tier-pip-dot" style="background:var(--tier-ccs)"></div>
-        CCS Circuit
-      </div>
-      <div class="tier-pip">
-        <div class="tier-pip-dot" style="background:var(--tier-major)"></div>
-        Major
-      </div>
-      <div class="tier-pip">
-        <div class="tier-pip-dot" style="background:var(--tier-showdown)"></div>
-        Showdown
-      </div>
-      <div class="tier-pip">
-        <div class="tier-pip-dot" style="background:var(--tier-release)"></div>
-        Set Release
-      </div>
-    </div>
-
-    <!-- Filter tabs -->
-    <div class="filter-tabs" role="group" aria-label="Filter events">
-      <button class="filter-tab active" onclick="filterEvents('all', this)">All</button>
-      <button class="filter-tab" onclick="filterEvents('rq', this)">RQs</button>
-      <button class="filter-tab" onclick="filterEvents('ccs', this)">CCS</button>
-      <button class="filter-tab" onclick="filterEvents('showdown', this)">Showdowns</button>
-      <button class="filter-tab" onclick="filterEvents('major', this)">Majors</button>
-      <button class="filter-tab" onclick="filterEvents('release', this)">Releases</button>
-    </div>
-
-    <table class="cal-table" id="cal-table">
-      <thead>
-        <tr>
-          <th style="width:3px; padding:0;"></th>
-          <th style="width:90px;">Date</th>
-          <th>Event</th>
-          <th class="hide-mobile">Location</th>
-          <th class="right hide-mobile">Prize</th>
-          <th class="right" style="width:20px;"></th>
-        </tr>
-      </thead>
-      <tbody id="cal-body">
-        <tr><td colspan="6"><div class="cal-empty">Loading events…</div></td></tr>
-      </tbody>
-    </table>
-
-    <!-- GUIDES -->
-    <section class="guides-section">
-      <div class="section-header">
-        <span class="section-title">Guides</span>
-        <a class="section-link" href="guides/index.html">All guides →</a>
-      </div>
-      <div class="guides-grid">
-
-        <a class="guide-card" href="guides/babys-first.html">
-          <div class="guide-tier">Foundation</div>
-          <h4>Baby's First Card Game</h4>
-          <p>Tempo, card advantage, archetypes, mana curves — before the rest of this site makes sense.</p>
-          <span class="guide-status live">Live</span>
-        </a>
-
-        <a class="guide-card coming-soon">
-          <div class="guide-tier">Fundamentals</div>
-          <h4>Fundamentals of Riftbound</h4>
-          <p>Even numbers, rune order, key turn identification, and loose archetypes.</p>
-          <span class="guide-status">Vendetta — Soon</span>
-        </a>
-
-        <a class="guide-card coming-soon">
-          <div class="guide-tier">Advanced</div>
-          <h4>Why You're Still Losing</h4>
-          <p>The skills you don't know you're missing. Role assignment, decision trees under fatigue.</p>
-          <span class="guide-status">Coming Soon</span>
-        </a>
-
-        <a class="guide-card coming-soon">
-          <div class="guide-tier">Legend Guides</div>
-          <h4>Vendetta Legend Guides</h4>
-          <p>Win conditions, key cards, matchup notes, and mulligan priorities per legend.</p>
-          <span class="guide-status">Vendetta — Soon</span>
-        </a>
-
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
-
-    <!-- Quick links -->
-    <div class="sidebar-section">
-      <div class="section-header">
-        <span class="section-title">Navigate</span>
-      </div>
-      <div class="quick-links">
-        <a class="quick-link" href="matchup.html">
-          Matchup Chart
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a class="quick-link" href="guides/babys-first.html">
-          Baby's First Card Game
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a class="quick-link" href="https://locator.riftbound.uvsgames.com/" target="_blank" rel="noopener">
-          UVS Event Locator ↗
-          <span class="quick-link-arrow">→</span>
-        </a>
-        <a class="quick-link" href="https://topdeck.gg/riftbound" target="_blank" rel="noopener">
-          TopDeck.gg ↗
-          <span class="quick-link-arrow">→</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- News -->
-    <div class="sidebar-section">
-      <div class="section-header">
-        <span class="section-title">News</span>
-      </div>
-
-      <div class="news-item">
+      <div class="news-card">
         <span class="news-tag breaking">OP Update</span>
         <h4>Origins &amp; Proving Grounds Best-Of era ends</h4>
         <p>
           Hartford was the final RQ featuring all 40 Best-Of Legends.
           From Barcelona onward, only Spiritforged and Unleashed champions
-          carry Best-Of incentives.
+          carry Best-Of incentives at Regional Qualifiers.
           <a href="https://riftbound.leagueoflegends.com/en-us/news/announcements/all-eyes-on-hartford/" target="_blank" rel="noopener">Official announcement →</a>
         </p>
-        <div class="news-date">Jun 23, 2026</div>
+        <div class="news-card-footer">
+          <span class="news-date">Jun 23, 2026</span>
+        </div>
       </div>
 
-      <div class="news-item">
+      <div class="news-card">
         <span class="news-tag set">Set Preview</span>
         <h4>Vendetta spoilers begin July 6</h4>
         <p>
           Three weeks of card reveals ahead of the July 31 release.
           New legends include Nasus, Renekton, Akali, Mel, Ambessa, Zed, and Shen.
-          Chart and guide updates start day one.
+          Analysis begins as cards are revealed.
         </p>
-        <div class="news-date">Jun 23, 2026</div>
+        <div class="news-card-footer">
+          <span class="news-date">Jun 23, 2026</span>
+        </div>
       </div>
 
-      <div class="news-item">
+      <div class="news-card">
         <span class="news-tag op">State of the Game</span>
         <h4>Second State of the Game — August</h4>
         <p>
           Riot has confirmed a second State of the Game in early August.
-          Regional Championship venues, Worlds 2027 details, and competitive
-          announcements expected.
+          Regional Championship venues and competitive announcements expected.
           <a href="https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-latest-2026-roadmap/" target="_blank" rel="noopener">2026 roadmap →</a>
         </p>
-        <div class="news-date">Jun 23, 2026</div>
+        <div class="news-card-footer">
+          <span class="news-date">Jun 23, 2026</span>
+        </div>
       </div>
 
-      <div class="news-item">
+      <div class="news-card">
         <span class="news-tag site">RiftStats</span>
-        <h4>What's coming to RiftStats</h4>
+        <h4>What's coming</h4>
         <p>
-          Matchup chart populates post-Vendetta with expert-curated rates.
-          Fundamentals guide and legend guides follow. Event calendar expanding
-          to include locals and CCS LCQs.
+          Matchup chart populates as the Vendetta meta develops.
+          Fundamentals guide and legend guides to follow.
+          Event calendar expanding as more events are confirmed.
         </p>
-        <div class="news-date">Jun 23, 2026</div>
+        <div class="news-card-footer">
+          <span class="news-date">Jun 23, 2026</span>
+        </div>
       </div>
 
     </div>
+  </section>
 
-  </aside>
+  <!-- GUIDES -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Guides</span>
+      <a class="section-link" href="guides/index.html">All guides →</a>
+    </div>
+    <div class="guides-grid">
+
+      <a class="guide-card" href="guides/babys-first.html">
+        <div class="guide-tier">Foundation</div>
+        <h4>Baby's First Card Game</h4>
+        <p>Tempo, card advantage, archetypes, mana curves — the concepts every competitive player needs before anything else.</p>
+        <span class="guide-status live">Live</span>
+      </a>
+
+      <a class="guide-card coming-soon">
+        <div class="guide-tier">Fundamentals</div>
+        <h4>Fundamentals of Riftbound</h4>
+        <p>Even numbers, rune order, key turn identification, and why archetypes are looser in this game than most.</p>
+        <span class="guide-status">Vendetta — Soon</span>
+      </a>
+
+      <a class="guide-card coming-soon">
+        <div class="guide-tier">Advanced</div>
+        <h4>Why You're Still Losing</h4>
+        <p>The skills you don't know you're missing. Role assignment, decision trees under fatigue, playing around the unseen.</p>
+        <span class="guide-status">Coming Soon</span>
+      </a>
+
+      <a class="guide-card coming-soon">
+        <div class="guide-tier">Legend Guides</div>
+        <h4>Vendetta Legend Guides</h4>
+        <p>Win conditions, key cards, matchup notes, and mulligan priorities. One guide per legend, post-release.</p>
+        <span class="guide-status">Vendetta — Soon</span>
+      </a>
+
+    </div>
+  </section>
 
 </div>
 
-<!-- FOOTER (outside .page grid so it's full width) -->
-<footer style="max-width:1280px; margin:0 auto; padding-left:2rem; padding-right:2rem;">
+<footer style="max-width:1100px; margin:0 auto; padding-left:2rem; padding-right:2rem;">
   <span>RiftStats — Not affiliated with Riot Games or UVS Games.</span>
   <span>By <a href="about.html">Aiden Thorne</a></span>
 </footer>
 
-<script>
-  const TIER_CONFIG = {
-    rq:       { color: 'var(--tier-rq)',       label: 'Regional Qualifier', bg: 'var(--tier-rq-bg)' },
-    ccs:      { color: 'var(--tier-ccs)',      label: 'CCS Circuit',        bg: 'var(--tier-ccs-bg)' },
-    showdown: { color: 'var(--tier-showdown)', label: 'Showdown',           bg: 'var(--tier-showdown-bg)' },
-    major:    { color: 'var(--tier-major)',     label: 'Major',              bg: 'var(--tier-major-bg)' },
-    release:  { color: 'var(--tier-release)',  label: 'Set Release',        bg: 'var(--tier-release-bg)' },
-    other:    { color: 'var(--tier-other)',     label: 'Convention',         bg: 'var(--tier-other-bg)' },
-  };
-
-  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  let allEvents = [];
-  let currentFilter = 'all';
-
-  function formatDateRange(start, end) {
-    const s = new Date(start + 'T12:00:00');
-    const e = end ? new Date(end + 'T12:00:00') : null;
-
-    const sMonth = MONTHS[s.getMonth()];
-    const sDay   = s.getDate();
-    const sYear  = s.getFullYear();
-
-    if (!e || start === end) {
-      return { primary: `${sMonth} ${sDay}`, secondary: `${sYear}` };
-    }
-
-    const eDay = e.getDate();
-    if (s.getMonth() === e.getMonth()) {
-      return { primary: `${sMonth} ${sDay}–${eDay}`, secondary: `${sYear}` };
-    }
-
-    const eMonth = MONTHS[e.getMonth()];
-    return { primary: `${sMonth} ${sDay} – ${eMonth} ${eDay}`, secondary: `${sYear}` };
-  }
-
-  function isPast(dateStr) {
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const d = new Date(dateStr + 'T12:00:00');
-    return d < today;
-  }
-
-  function getMonthKey(dateStr) {
-    const d = new Date(dateStr + 'T12:00:00');
-    return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-  }
-
-  function renderTable(events) {
-    const tbody = document.getElementById('cal-body');
-    if (!events.length) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="cal-empty">No events found.</div></td></tr>`;
-      return;
-    }
-
-    let html = '';
-    let lastMonth = '';
-
-    events.forEach(ev => {
-      const tier   = TIER_CONFIG[ev.tier] || TIER_CONFIG.other;
-      const dates  = formatDateRange(ev.date_start, ev.date_end);
-      const past   = isPast(ev.date_end || ev.date_start);
-      const month  = getMonthKey(ev.date_start);
-      const hasUrl = !!ev.url;
-
-      // Month divider
-      if (month !== lastMonth) {
-        html += `<tr class="cal-month-row">
-          <td></td>
-          <td colspan="5">${month}</td>
-        </tr>`;
-        lastMonth = month;
-      }
-
-      const rowClass = [
-        past ? 'past' : '',
-        hasUrl ? 'has-link' : '',
-      ].filter(Boolean).join(' ');
-
-      const onClickAttr = hasUrl
-        ? `onclick="window.open('${ev.url}','_blank','noopener')"` : '';
-
-      html += `<tr class="${rowClass}" ${onClickAttr}>
-        <td class="tier-stripe">
-          <div class="tier-stripe-inner" style="background:${tier.color}"></div>
-        </td>
-        <td class="cal-date">
-          <span class="cal-date-primary">${dates.primary}</span>
-          <span class="cal-date-secondary">${dates.secondary}</span>
-        </td>
-        <td class="cal-name">
-          <span class="cal-name-primary">${ev.name}</span>
-          ${ev.note ? `<span class="cal-name-note">${ev.note}</span>` : ''}
-          <div style="margin-top:0.25rem;">
-            <span class="tier-badge" style="color:${tier.color};background:${tier.bg};">
-              ${tier.label}
-            </span>
-            ${ev.format ? `<span style="font-size:0.62rem;color:var(--dim);margin-left:0.4rem;">${ev.format}</span>` : ''}
-          </div>
-        </td>
-        <td class="cal-location hide-mobile">
-          ${ev.city && ev.city !== 'Worldwide' ? `<span>${ev.city}</span>` : ''}
-          ${ev.country ? `<span class="cal-country">${ev.country}</span>` : ''}
-          ${ev.city === 'Worldwide' ? `<span style="color:var(--dim);font-size:0.75rem;">Worldwide</span>` : ''}
-        </td>
-        <td class="cal-prize hide-mobile">
-          ${ev.prize
-            ? `<span class="cal-prize">${ev.prize}</span>`
-            : `<span class="cal-prize-none">—</span>`}
-        </td>
-        <td class="cal-link-icon">
-          ${hasUrl ? '↗' : ''}
-        </td>
-      </tr>`;
-    });
-
-    tbody.innerHTML = html;
-  }
-
-  function filterEvents(tier, btn) {
-    currentFilter = tier;
-    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const filtered = tier === 'all'
-      ? allEvents
-      : allEvents.filter(e => e.tier === tier);
-
-    renderTable(filtered);
-  }
-
-  async function loadEvents() {
-    try {
-      const res = await fetch('data/events.json');
-      const json = await res.json();
-
-      // Sort by date
-      allEvents = json.events.sort((a, b) =>
-        new Date(a.date_start) - new Date(b.date_start)
-      );
-
-      renderTable(allEvents);
-    } catch(e) {
-      document.getElementById('cal-body').innerHTML =
-        `<tr><td colspan="6"><div class="cal-empty">Could not load events. Check data/events.json.</div></td></tr>`;
-    }
-  }
-
-  loadEvents();
-</script>
 </body>
 </html>

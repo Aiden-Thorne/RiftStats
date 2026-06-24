@@ -13,7 +13,8 @@
       "venue": "Stone Mountain, GA",
       "prize": "$25,000",
       "url": "https://topdeck.gg/event/25000-atlanta-invitational-qualifier-4",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Charlie's Collectible Show"
     },
     {
       "id": "ccs-5k-jul",
@@ -26,7 +27,8 @@
       "venue": "Houston, TX",
       "prize": "$5,000",
       "url": "https://topdeck.gg/event/ccs-sunday-5000-riftbound-event-4",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Charlie's Collectible Show"
     },
     {
       "id": "china-major-unleashed",
@@ -40,7 +42,8 @@
       "prize": null,
       "url": null,
       "format": "Constructed",
-      "note": "Exact date TBA — mid-July per official roadmap"
+      "note": "Exact date TBA \u2014 mid-July per official roadmap",
+      "organizer": null
     },
     {
       "id": "showdown-fort-worth",
@@ -53,7 +56,8 @@
       "venue": "Will Rogers Memorial Center",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Pro-Play Games"
     },
     {
       "id": "showdown-pittsburgh",
@@ -66,7 +70,8 @@
       "venue": "David L. Lawrence Convention Center",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Excalibur Events"
     },
     {
       "id": "vendetta-prerift",
@@ -79,11 +84,12 @@
       "venue": "Local Game Stores",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/",
-      "format": "Sealed"
+      "format": "Sealed",
+      "organizer": null
     },
     {
       "id": "vendetta-release",
-      "name": "Vendetta Releases — Set 4",
+      "name": "Vendetta Releases \u2014 Set 4",
       "tier": "release",
       "date_start": "2026-07-31",
       "date_end": "2026-07-31",
@@ -92,7 +98,8 @@
       "venue": null,
       "prize": null,
       "url": "https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-latest-2026-roadmap/",
-      "format": null
+      "format": null,
+      "organizer": null
     },
     {
       "id": "showdown-gatineau",
@@ -105,7 +112,8 @@
       "venue": "TBA",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Face to Face Games"
     },
     {
       "id": "showdown-auckland",
@@ -118,7 +126,8 @@
       "venue": "Auckland Showgrounds",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Geek Culture Events"
     },
     {
       "id": "showdown-speyer",
@@ -131,7 +140,8 @@
       "venue": "Speyer Town Hall",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Battle Bear"
     },
     {
       "id": "showdown-milwaukee",
@@ -144,11 +154,12 @@
       "venue": "Baird Center",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events/620165",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Nerd Rage Gaming"
     },
     {
       "id": "rq-barcelona",
-      "name": "Regional Qualifier — Barcelona",
+      "name": "Regional Qualifier \u2014 Barcelona",
       "tier": "rq",
       "date_start": "2026-08-21",
       "date_end": "2026-08-23",
@@ -157,11 +168,12 @@
       "venue": "Fira Barcelona",
       "prize": "$25,000",
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Riot / UVS Games"
     },
     {
       "id": "rq-singapore",
-      "name": "Regional Qualifier — Singapore",
+      "name": "Regional Qualifier \u2014 Singapore",
       "tier": "rq",
       "date_start": "2026-09-04",
       "date_end": "2026-09-06",
@@ -170,11 +182,12 @@
       "venue": "TBA",
       "prize": "$25,000",
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Riot / UVS Games"
     },
     {
       "id": "showdown-baltimore",
-      "name": "Showdown Series — Star City Games",
+      "name": "Showdown Series \u2014 Star City Games",
       "tier": "showdown",
       "date_start": "2026-09-12",
       "date_end": "2026-09-12",
@@ -183,7 +196,8 @@
       "venue": "Baltimore Convention Center",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Star City Games"
     },
     {
       "id": "ccs-q5",
@@ -196,11 +210,12 @@
       "venue": "Houston, TX",
       "prize": "$25,000",
       "url": "https://topdeck.gg/event/25000-houston-invitational-qualifier-5",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Charlie's Collectible Show"
     },
     {
       "id": "rq-los-angeles",
-      "name": "Regional Qualifier — Los Angeles",
+      "name": "Regional Qualifier \u2014 Los Angeles",
       "tier": "rq",
       "date_start": "2026-09-25",
       "date_end": "2026-09-27",
@@ -209,7 +224,8 @@
       "venue": "TBA",
       "prize": "$25,000",
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Riot / UVS Games"
     },
     {
       "id": "ccs-q6",
@@ -222,7 +238,8 @@
       "venue": "Stone Mountain, GA",
       "prize": "$25,000",
       "url": "https://topdeck.gg/event/25000-atlanta-invitational-qualifier-6",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "Charlie's Collectible Show"
     },
     {
       "id": "china-major-vendetta",
@@ -236,11 +253,12 @@
       "prize": null,
       "url": null,
       "format": "Constructed",
-      "note": "Exact date TBA — mid-October per official roadmap"
+      "note": "Exact date TBA \u2014 mid-October per official roadmap",
+      "organizer": null
     },
     {
       "id": "radiance-release",
-      "name": "Radiance Releases — Set 5",
+      "name": "Radiance Releases \u2014 Set 5",
       "tier": "release",
       "date_start": "2026-10-23",
       "date_end": "2026-10-23",
@@ -249,11 +267,12 @@
       "venue": null,
       "prize": null,
       "url": "https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-latest-2026-roadmap/",
-      "format": null
+      "format": null,
+      "organizer": null
     },
     {
       "id": "showdown-orlando",
-      "name": "Showdown Series — CoolStuffInc",
+      "name": "Showdown Series \u2014 CoolStuffInc",
       "tier": "showdown",
       "date_start": "2026-10-30",
       "date_end": "2026-10-30",
@@ -262,7 +281,8 @@
       "venue": "Hyatt Regency Orlando",
       "prize": null,
       "url": "https://locator.riftbound.uvsgames.com/events",
-      "format": "Constructed"
+      "format": "Constructed",
+      "organizer": "CoolStuffInc"
     },
     {
       "id": "ccs-championship",
@@ -276,7 +296,8 @@
       "prize": "$50,000",
       "url": "https://topdeck.gg/circuit/ccs-50000-riftbound-invational",
       "format": "Constructed",
-      "note": "128-player invite-only championship"
+      "note": "128-player invite-only championship",
+      "organizer": "Charlie's Collectible Show"
     },
     {
       "id": "pax-unplugged",
@@ -289,7 +310,22 @@
       "venue": "TBA",
       "prize": null,
       "url": "https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-latest-2026-roadmap/",
-      "format": null
+      "format": null,
+      "organizer": null
+    },
+    {
+      "id": "showdown-murcia",
+      "name": "Showdown Series",
+      "tier": "showdown",
+      "date_start": "2026-10-03",
+      "date_end": "2026-10-03",
+      "city": "Murcia",
+      "country": "Spain",
+      "venue": "Centro Comercial Myrtea",
+      "organizer": "Spell Nexus",
+      "prize": null,
+      "url": "https://locator.riftbound.uvsgames.com/events",
+      "format": "Constructed"
     }
   ]
 }

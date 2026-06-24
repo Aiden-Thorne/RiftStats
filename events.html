@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Competitive Calendar — RiftStats</title>
+  <meta name="description" content="Complete Riftbound competitive event calendar. Regional Qualifiers, Showdowns, CCS Circuit, and Majors in one place." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+    .page-header {
+      margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: baseline;
+      justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .page-header h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .page-header-sub { font-size: 0.78rem; color: var(--muted); }
+
+    /* Tier legend */
+    .tier-legend {
+      display: flex; gap: 1.25rem; flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .tier-pip {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.68rem; color: var(--muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .tier-pip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Filter tabs */
+    .filter-tabs { display: flex; gap: 0.25rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .filter-tab {
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.7rem;
+      font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; border-radius: 3px; transition: all 0.12s;
+    }
+    .filter-tab:hover { color: var(--text); border-color: var(--dim); }
+    .filter-tab.active { color: #fff; border-color: var(--accent); background: var(--accent); }
+
+    /* Calendar table */
+    .cal-table { width: 100%; border-collapse: collapse; }
+    .cal-table thead tr { border-bottom: 2px solid var(--border); }
+    .cal-table th {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); padding: 0 0.75rem 0.6rem; text-align: left;
+    }
+    .cal-table th.right { text-align: right; }
+    .cal-table tbody tr {
+      border-bottom: 1px solid var(--border-dim);
+      transition: background 0.1s;
+    }
+    .cal-table tbody tr:hover { background: var(--surface); }
+    .cal-table tbody tr.has-link { cursor: pointer; }
+    .cal-table td { padding: 0.7rem 0.75rem; vertical-align: middle; }
+    .cal-table td:first-child { padding-left: 0; }
+
+    .tier-stripe { width: 3px; padding: 0 !important; }
+    .tier-stripe-inner { width: 3px; min-height: 36px; border-radius: 1px; }
+
+    .cal-date { white-space: nowrap; }
+    .cal-date-primary { font-size: 0.82rem; font-weight: 600; color: var(--text); display: block; }
+    .cal-date-secondary { font-size: 0.68rem; color: var(--dim); display: block; }
+
+    .cal-name { min-width: 200px; }
+    .cal-name-primary {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text); display: block; line-height: 1.2; margin-bottom: 0.1rem;
+    }
+    .cal-name-note { font-size: 0.68rem; color: var(--muted); font-style: italic; }
+
+    .tier-badge {
+      display: inline-block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 2px; white-space: nowrap;
+    }
+
+    .cal-location { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+    .cal-country { font-size: 0.65rem; color: var(--dim); display: block; }
+
+    .cal-organizer { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+
+    .cal-prize { font-size: 0.82rem; font-weight: 600; color: var(--gold); text-align: right; white-space: nowrap; }
+    .cal-prize-none { color: var(--dim); }
+
+    .cal-link-icon { color: var(--dim); font-size: 0.75rem; text-align: right; }
+    .cal-table tbody tr.has-link:hover .cal-link-icon { color: var(--accent); }
+
+    .cal-month-row td {
+      padding: 1rem 0 0.4rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dim); border-bottom: none; background: none !important;
+    }
+    .cal-month-row:hover { background: none !important; cursor: default; }
+    .cal-table tbody tr.past { opacity: 0.4; }
+    .cal-empty { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+    @media (max-width: 700px) {
+      .page { padding: 1.25rem 1rem 3rem; }
+      .cal-table th.hide-mobile,
+      .cal-table td.hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <span class="nav-brand-rift">Rift</span><span class="nav-brand-stats">Stats</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="events.html" class="active">Events</a></li>
+    <li><a href="matchup.html">Matchup Chart</a></li>
+    <li><a href="guides/index.html">Guides</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>Competitive Calendar 2026</h1>
+    <span class="page-header-sub">Regional Qualifiers · Showdowns · CCS Circuit · Majors</span>
+  </div>
+
+  <div class="tier-legend">
+    <div class="tier-pip"><div class="tier-pip-dot" style="background:var(--tier-rq)"></div>Regional Qualifier</div>
+    <div class="tier-pip"><div class="tier-pip-dot" style="background:var(--tier-ccs)"></div>CCS Circuit</div>
+    <div class="tier-pip"><div class="tier-pip-dot" style="background:var(--tier-major)"></div>Major</div>
+    <div class="tier-pip"><div class="tier-pip-dot" style="background:var(--tier-showdown)"></div>Showdown</div>
+    <div class="tier-pip"><div class="tier-pip-dot" style="background:var(--tier-release)"></div>Set Release</div>
+  </div>
+
+  <div class="filter-tabs" role="group" aria-label="Filter events">
+    <button class="filter-tab active" onclick="filterEvents('all', this)">All</button>
+    <button class="filter-tab" onclick="filterEvents('rq', this)">RQs</button>
+    <button class="filter-tab" onclick="filterEvents('ccs', this)">CCS</button>
+    <button class="filter-tab" onclick="filterEvents('showdown', this)">Showdowns</button>
+    <button class="filter-tab" onclick="filterEvents('major', this)">Majors</button>
+    <button class="filter-tab" onclick="filterEvents('release', this)">Releases</button>
+  </div>
+
+  <table class="cal-table">
+    <thead>
+      <tr>
+        <th style="width:3px;padding:0;"></th>
+        <th style="width:90px;">Date</th>
+        <th>Event</th>
+        <th class="hide-mobile">Organizer</th>
+        <th class="hide-mobile">Location</th>
+        <th class="right hide-mobile">Prize</th>
+        <th class="right" style="width:20px;"></th>
+      </tr>
+    </thead>
+    <tbody id="cal-body">
+      <tr><td colspan="7"><div class="cal-empty">Loading events…</div></td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<footer style="max-width:1100px; margin:0 auto; padding-left:2rem; padding-right:2rem;">
+  <span>RiftStats — Not affiliated with Riot Games or UVS Games.</span>
+  <span>By <a href="about.html">Aiden Thorne</a></span>
+</footer>
+
+<script>
+  const TIER_CONFIG = {
+    rq:       { color: 'var(--tier-rq)',       label: 'Regional Qualifier', bg: 'var(--tier-rq-bg)' },
+    ccs:      { color: 'var(--tier-ccs)',      label: 'CCS Circuit',        bg: 'var(--tier-ccs-bg)' },
+    showdown: { color: 'var(--tier-showdown)', label: 'Showdown',           bg: 'var(--tier-showdown-bg)' },
+    major:    { color: 'var(--tier-major)',     label: 'Major',              bg: 'var(--tier-major-bg)' },
+    release:  { color: 'var(--tier-release)',  label: 'Set Release',        bg: 'var(--tier-release-bg)' },
+    other:    { color: 'var(--tier-other)',     label: 'Convention',         bg: 'var(--tier-other-bg)' },
+  };
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let allEvents = [];
+
+  function formatDateRange(start, end) {
+    const s = new Date(start + 'T12:00:00');
+    const e = end ? new Date(end + 'T12:00:00') : null;
+    const sMonth = MONTHS[s.getMonth()], sDay = s.getDate(), sYear = s.getFullYear();
+    if (!e || start === end) return { primary: `${sMonth} ${sDay}`, secondary: `${sYear}` };
+    const eDay = e.getDate();
+    if (s.getMonth() === e.getMonth()) return { primary: `${sMonth} ${sDay}–${eDay}`, secondary: `${sYear}` };
+    return { primary: `${sMonth} ${sDay} – ${MONTHS[e.getMonth()]} ${eDay}`, secondary: `${sYear}` };
+  }
+
+  function isPast(d) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    return new Date(d + 'T12:00:00') < today;
+  }
+
+  function getMonthKey(d) {
+    const dt = new Date(d + 'T12:00:00');
+    return `${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+  }
+
+  function renderTable(events) {
+    const tbody = document.getElementById('cal-body');
+    if (!events.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="cal-empty">No events found.</div></td></tr>`;
+      return;
+    }
+    let html = '', lastMonth = '';
+    events.forEach(ev => {
+      const tier = TIER_CONFIG[ev.tier] || TIER_CONFIG.other;
+      const dates = formatDateRange(ev.date_start, ev.date_end);
+      const past = isPast(ev.date_end || ev.date_start);
+      const month = getMonthKey(ev.date_start);
+      const hasUrl = !!ev.url;
+
+      if (month !== lastMonth) {
+        html += `<tr class="cal-month-row"><td></td><td colspan="6">${month}</td></tr>`;
+        lastMonth = month;
+      }
+
+      const rowClass = [past ? 'past' : '', hasUrl ? 'has-link' : ''].filter(Boolean).join(' ');
+      const onClick = hasUrl ? `onclick="window.open('${ev.url}','_blank','noopener')"` : '';
+
+      html += `<tr class="${rowClass}" ${onClick}>
+        <td class="tier-stripe"><div class="tier-stripe-inner" style="background:${tier.color}"></div></td>
+        <td class="cal-date">
+          <span class="cal-date-primary">${dates.primary}</span>
+          <span class="cal-date-secondary">${dates.secondary}</span>
+        </td>
+        <td class="cal-name">
+          <span class="cal-name-primary">${ev.name}</span>
+          ${ev.note ? `<span class="cal-name-note">${ev.note}</span>` : ''}
+          <div style="margin-top:0.25rem;">
+            <span class="tier-badge" style="color:${tier.color};background:${tier.bg};">${tier.label}</span>
+            ${ev.format ? `<span style="font-size:0.62rem;color:var(--dim);margin-left:0.4rem;">${ev.format}</span>` : ''}
+          </div>
+        </td>
+        <td class="cal-organizer hide-mobile">${ev.organizer || '<span style="color:var(--dim)">—</span>'}</td>
+        <td class="cal-location hide-mobile">
+          ${ev.venue && ev.venue !== 'TBA' && ev.city !== 'Worldwide' ? `<span>${ev.venue}</span><br>` : ''}
+          ${ev.city && ev.city !== 'Worldwide' ? `<span>${ev.city}</span>` : ''}
+          ${ev.country ? `<span class="cal-country">${ev.country}</span>` : ''}
+          ${ev.city === 'Worldwide' ? `<span style="color:var(--dim);font-size:0.75rem;">Worldwide</span>` : ''}
+        </td>
+        <td class="cal-prize hide-mobile">
+          ${ev.prize ? `<span class="cal-prize">${ev.prize}</span>` : `<span class="cal-prize-none">—</span>`}
+        </td>
+        <td class="cal-link-icon">${hasUrl ? '↗' : ''}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  }
+
+  function filterEvents(tier, btn) {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable(tier === 'all' ? allEvents : allEvents.filter(e => e.tier === tier));
+  }
+
+  async function loadEvents() {
+    try {
+      const res = await fetch('data/events.json');
+      const json = await res.json();
+      allEvents = json.events.sort((a, b) => new Date(a.date_start) - new Date(b.date_start));
+      renderTable(allEvents);
+    } catch(e) {
+      document.getElementById('cal-body').innerHTML =
+        `<tr><td colspan="7"><div class="cal-empty">Could not load events.</div></td></tr>`;
+    }
+  }
+  loadEvents();
+</script>
+</body>
+</html>
