@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — RiftStats</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="_shared.css" />
+  <style>
+    .about-page {
+      max-width: 640px; margin: 3rem auto;
+      padding: 0 2rem;
+    }
+    .about-page h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem; font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .about-tagline {
+      font-size: 1rem; color: var(--gold);
+      font-style: italic; margin-bottom: 2rem;
+      padding-left: 0.75rem;
+      border-left: 2px solid var(--gold);
+    }
+    .about-page p {
+      color: var(--muted); line-height: 1.8;
+      margin-bottom: 1.25rem; font-size: 0.9rem;
+    }
+    .about-page p strong { color: var(--text); }
+    .about-creds {
+      margin: 2rem 0; padding: 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .about-creds h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.75rem;
+    }
+    .cred-item {
+      font-size: 0.82rem; color: var(--muted);
+      padding: 0.3rem 0; border-bottom: 1px solid var(--border-dim);
+      display: flex; align-items: baseline; gap: 0.5rem;
+    }
+    .cred-item:last-child { border-bottom: none; }
+    .cred-item::before {
+      content: '—'; color: var(--accent); flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <span class="nav-brand-rift">Rift</span><span class="nav-brand-stats">Stats</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Events</a></li>
+    <li><a href="matchup.html">Matchup Chart</a></li>
+    <li><a href="guides/index.html">Guides</a></li>
+  </ul>
+</nav>
+
+<div class="about-page">
+  <h1>Aiden Thorne</h1>
+  <p class="about-tagline">"Children don't play children's card games."</p>
+
+  <p>
+    RiftStats is a competitive Riftbound resource built by someone who has been
+    playing card games professionally since before most of the current player base
+    knew what a mana curve was. The matchup chart reflects expert judgment from
+    high-level Bo3 play — not blended aggregate data from the full player pool.
+    Guides are written to make you better, not to make you feel good about where
+    you already are.
+  </p>
+
+  <p>
+    The name is <strong>Aiden Thorne</strong> — a gaming alias carried since the
+    DCI era. Previously wrote competitive content for <strong>Wizards of the Coast</strong>,
+    <strong>Pojo</strong>, and <strong>Alter Reality Games</strong>. Currently a
+    network administrator and cybersecurity SME by day, grinding RiftAtlas by night.
+  </p>
+
+  <div class="about-creds">
+    <h3>Competitive History</h3>
+    <div class="cred-item">Official DCI Rank 1 Duel Masters Limited Player</div>
+    <div class="cred-item">Rank 1 Yugioh Player — Connecticut, Upper Deck era</div>
+    <div class="cred-item">Consistently Top 10 Official DCI Duel Masters Constructed (Worldwide)</div>
+    <div class="cred-item">Official DCI Rank 2 Kaijudo Player</div>
+    <div class="cred-item">Top 32 — Guardians of the Ancients Seasonal Tournament, Legends of Runeterra</div>
+    <div class="cred-item">6-3 Day 1, RQ Houston — Riftbound (first major event, cold deck)</div>
+  </div>
+
+  <p>
+    Content lives by its own merit. If it's good, you'll be back.
+  </p>
+</div>
+
+<footer style="max-width:1280px; margin:0 auto; padding-left:2rem; padding-right:2rem;">
+  <span>RiftStats — Not affiliated with Riot Games or UVS Games.</span>
+  <span>By <a href="about.html">Aiden Thorne</a></span>
+</footer>
+
+</body>
+</html>
