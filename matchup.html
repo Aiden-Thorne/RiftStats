@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matchup Chart — RiftStats</title>
+  <meta name="description" content="Riftbound matchup win rates from Regional Qualifier data. Expert-curated rates coming post-Vendetta." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    .page { max-width: 1400px; margin: 0 auto; padding: 1.75rem 2rem 4rem; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; flex-wrap: wrap;
+      gap: 1rem; margin-bottom: 1.25rem;
+      padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .page-header-sub { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .page-header-sub strong { color: var(--gold); font-weight: 500; }
+
+    /* ── TAB BAR ── */
+    .tab-bar {
+      display: flex; gap: 0; margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); cursor: pointer;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.5rem 1.25rem; margin-bottom: -1px;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .control-group {
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .control-label {
+      font-size: 0.72rem; color: var(--muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .control-select {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); border-radius: 4px;
+      padding: 0.3rem 0.6rem; font-size: 0.8rem;
+      font-family: inherit; cursor: pointer;
+    }
+    .control-select:focus { outline: 1px solid var(--accent); }
+
+    .data-note {
+      font-size: 0.72rem; color: var(--muted);
+      margin-left: auto; font-style: italic;
+    }
+    .data-note strong { color: var(--gold); font-style: normal; }
+
+    /* ── CHART WRAPPER ── */
+    .chart-outer {
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      max-height: calc(100vh - 280px);
+    }
+
+    /* ── TABLE ── */
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    /* Sticky header row */
+    thead tr {
+      position: sticky; top: 0; z-index: 4;
+    }
+
+    /* Header cells */
+    thead th {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--border);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.02em; color: var(--muted);
+      white-space: nowrap; padding: 0.4rem 0.2rem;
+      text-align: center; vertical-align: bottom;
+      width: 52px; min-width: 52px;
+    }
+
+    /* Row label column - sticky left */
+    .col-label {
+      position: sticky; left: 0; z-index: 3;
+      width: 180px; min-width: 180px;
+      background: var(--surface);
+      text-align: left; padding: 0 0.75rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text); white-space: nowrap;
+      border-right: 2px solid var(--border);
+    }
+
+    /* Top-left corner cell */
+    thead th.col-label {
+      z-index: 5;
+      color: var(--muted); font-size: 0.62rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      text-align: left;
+    }
+
+    /* Data cells */
+    td {
+      width: 52px; min-width: 52px; height: 40px;
+      text-align: center; vertical-align: middle;
+      font-size: 0.72rem; font-weight: 500;
+      border: 1px solid var(--border-dim);
+      cursor: default;
+    }
+
+    /* Cell types */
+    .cell-mirror {
+      background: var(--surface2);
+      position: relative; overflow: hidden;
+    }
+    .cell-mirror::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(
+        135deg,
+        transparent calc(50% - 0.5px),
+        var(--accent) calc(50% - 0.5px),
+        var(--accent) calc(50% + 0.5px),
+        transparent calc(50% + 0.5px)
+      );
+      opacity: 0.5;
+    }
+    .cell-win       { background: var(--win);    color: var(--win-text);  font-weight: 600; }
+    .cell-loss      { background: var(--loss);   color: var(--loss-text); font-weight: 600; }
+    .cell-even      { background: var(--even);   color: var(--even-text); }
+    .cell-pending   { background: var(--surface2); color: var(--border); }
+    .cell-low       { opacity: 0.55; }
+
+    /* ── CHART FOOTER ── */
+    .chart-footer {
+      display: flex; gap: 1.5rem; flex-wrap: wrap;
+      padding: 0.6rem 0.75rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+    }
+    .chart-footer-right {
+      margin-left: auto; font-size: 0.72rem; color: var(--dim);
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem; margin-top: 1.25rem;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.85rem 1rem;
+    }
+    .stat-card-label {
+      font-size: 0.65rem; color: var(--muted);
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .stat-card-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.1rem;
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stat-card-value { font-size: 0.8rem; font-weight: 600; }
+    .stat-card-value.win  { color: var(--win-text); }
+    .stat-card-value.loss { color: var(--loss-text); }
+    .stat-card-value.neutral { color: var(--muted); }
+
+    /* ── CURATED PANEL ── */
+    .curated-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 2rem;
+      text-align: center; color: var(--muted);
+    }
+    .curated-panel h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--accent); margin-bottom: 0.75rem;
+    }
+    .curated-panel p { font-size: 0.85rem; line-height: 1.7; max-width: 520px; margin: 0 auto; }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center; padding: 4rem 2rem;
+      color: var(--muted); font-size: 0.9rem;
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 1rem 0.5rem 3rem; }
+      .data-note { display: none; }
+    }
+
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <span class="nav-brand-rift">Rift</span><span class="nav-brand-stats">Stats</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="events.html">Events</a></li>
+    <li><a href="matchup.html" class="active">Matchup Chart</a></li>
+    <li><a href="guides/index.html">Guides</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>Matchup Chart</h1>
+      <div class="page-header-sub">
+        Bo3 win rates from RQ data — Hartford, Utrecht, Vancouver.<br>
+        <strong>Raw tab:</strong> aggregate field data, all pilots.
+        <strong>Curated tab:</strong> expert-adjusted rates, post-Vendetta.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="setTab('raw', this)">Raw Data</button>
+    <button class="tab-btn" onclick="setTab('curated', this)">Curated ✦</button>
+  </div>
+
+  <!-- Controls (raw only) -->
+  <div class="controls" id="raw-controls">
+    <div class="control-group">
+      <span class="control-label">Min sample</span>
+      <select class="control-select" id="min-sample" onchange="renderTable()">
+        <option value="0">All data</option>
+        <option value="20" selected>20+ matches</option>
+        <option value="50">50+ matches</option>
+        <option value="100">100+ matches</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Sort by</span>
+      <select class="control-select" id="sort-by" onchange="renderTable()">
+        <option value="name">Name</option>
+        <option value="playrate" selected>Play rate</option>
+        <option value="winrate">Win rate</option>
+      </select>
+    </div>
+    <span class="data-note" id="data-note"></span>
+  </div>
+
+  <!-- Raw chart -->
+  <div id="raw-panel">
+    <div class="chart-outer" id="chart-outer">
+      <div class="loading">Loading matchup data…</div>
+    </div>
+    <div class="stats-bar" id="stats-bar"></div>
+  </div>
+
+  <!-- Curated panel -->
+  <div id="curated-panel" style="display:none;">
+    <div class="curated-panel">
+      <h3>⬡ Vendetta</h3>
+      <p>
+        Curated rates reflect expert judgment on high-level play — adjusted for pilot skill
+        distribution, Bo3 context, and matchup understanding. These numbers will differ
+        meaningfully from raw aggregate data in skill-dependent matchups.<br><br>
+        Curated rates will populate as the Vendetta meta develops post-July 31.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<footer style="max-width:1400px; margin:0 auto; padding-left:2rem; padding-right:2rem;">
+  <span>RiftStats — Not affiliated with Riot Games or UVS Games.</span>
+  <span>By <a href="about.html">Aiden Thorne</a></span>
+</footer>
+
+<script>
+  let MATRIX = null;
+  let LEGENDS = [];
+  let TOTAL = 0;
+  let currentTab = 'raw';
+
+  // Short name for column headers (before first comma)
+  function shortName(name) {
+    return name.split(',')[0].trim();
+  }
+
+  async function init() {
+    try {
+      const res = await fetch('data/matchup_raw.json');
+      if (!res.ok) throw new Error('no data');
+      const json = await res.json();
+      MATRIX = json.matrix;
+      LEGENDS = json.legends;
+      TOTAL = json.total || 0;
+
+      const note = document.getElementById('data-note');
+      if (json.generated) {
+        const d = new Date(json.generated);
+        note.innerHTML = `<strong>${TOTAL.toLocaleString()} matches</strong> · Hartford, Utrecht, Vancouver · Updated ${d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`;
+      }
+
+      renderTable();
+      renderStats();
+    } catch(e) {
+      document.getElementById('chart-outer').innerHTML =
+        `<div class="loading">Could not load matchup data.<br><span style="font-size:0.8rem;">Place matchup_raw.json in data/ folder.</span></div>`;
+    }
+  }
+
+  function getLegendTotals() {
+    return LEGENDS.map(a => {
+      let wins = 0, losses = 0;
+      LEGENDS.forEach(b => {
+        if (a === b) return;
+        const cell = MATRIX[a]?.[b];
+        if (!cell || cell.mirror) return;
+        wins   += cell.wins   || 0;
+        losses += cell.losses || 0;
+      });
+      const total = wins + losses;
+      const wr = total > 0 ? wins / total * 100 : null;
+      return { name: a, wins, losses, total, wr };
+    });
+  }
+
+  function getSortedLegends() {
+    const sortBy = document.getElementById('sort-by')?.value || 'playrate';
+    const totals = getLegendTotals();
+    const map = Object.fromEntries(totals.map(t => [t.name, t]));
+
+    return [...LEGENDS].sort((a, b) => {
+      if (sortBy === 'name') return a.localeCompare(b);
+      if (sortBy === 'playrate') return (map[b]?.total || 0) - (map[a]?.total || 0);
+      if (sortBy === 'winrate') return (map[b]?.wr || 0) - (map[a]?.wr || 0);
+      return 0;
+    });
+  }
+
+  function cellClass(wr, lowSample) {
+    if (wr === null) return 'cell-pending';
+    const base = wr > 52 ? 'cell-win' : wr < 48 ? 'cell-loss' : 'cell-even';
+    return lowSample ? base + ' cell-low' : base;
+  }
+
+  function renderTable() {
+    if (!MATRIX) return;
+    const minSample = parseInt(document.getElementById('min-sample')?.value || 0);
+    const legends = getSortedLegends();
+
+    let html = `<table aria-label="Riftbound matchup chart">
+      <thead><tr>
+        <th class="col-label">vs →</th>`;
+
+    // Column headers — short name
+    legends.forEach(l => {
+      html += `<th title="${l}">${shortName(l)}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    legends.forEach(a => {
+      html += `<tr><td class="col-label">${a}</td>`;
+      legends.forEach(b => {
+        if (a === b) {
+          html += `<td class="cell-mirror" aria-label="mirror"></td>`;
+          return;
+        }
+        const cell = MATRIX[a]?.[b];
+        if (!cell || cell.mirror) {
+          html += `<td class="cell-pending" title="${shortName(a)} vs ${shortName(b)}: no data">—</td>`;
+          return;
+        }
+
+        const wr  = cell.win_rate;
+        const n   = cell.total || 0;
+        const low = n < minSample && minSample > 0;
+
+        if (low) {
+          html += `<td class="cell-pending cell-low" title="${shortName(a)} vs ${shortName(b)}: ${n} matches (below threshold)">—</td>`;
+          return;
+        }
+
+        const cls   = cellClass(wr, cell.low_sample);
+        const label = wr !== null ? wr + '%' : '—';
+        const tip   = wr !== null
+          ? `${a} vs ${b}: ${wr}% (n=${n})`
+          : `${a} vs ${b}: no data`;
+
+        html += `<td class="${cls}" title="${tip}">${label}</td>`;
+      });
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    html += `<div class="chart-footer">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--win)"></div>Favored (&gt;52%)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--even)"></div>Even (48–52%)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--loss)"></div>Unfavored (&lt;48%)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--surface2);border:1px solid var(--border)"></div>No data / below threshold</div>
+      <div class="chart-footer-right">Raw aggregate data · All pilots · Unleashed format only</div>
+    </div>`;
+
+    document.getElementById('chart-outer').innerHTML = html;
+  }
+
+  function renderStats() {
+    if (!MATRIX) return;
+    const totals = getLegendTotals().filter(s => s.total >= 100);
+    if (!totals.length) return;
+
+    const byWr   = [...totals].filter(s => s.wr !== null).sort((a,b) => b.wr - a.wr);
+    const byPlay = [...totals].sort((a,b) => b.total - a.total);
+    const best   = byWr[0];
+    const worst  = byWr[byWr.length - 1];
+    const mostPlayed = byPlay[0];
+    const leastPlayed = byPlay[byPlay.length - 1];
+
+    document.getElementById('stats-bar').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-card-label">Highest Raw Win Rate</div>
+        <div class="stat-card-name" title="${best.name}">${shortName(best.name)}</div>
+        <div class="stat-card-value win">${best.wr.toFixed(1)}% · ${best.total} matches</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Lowest Raw Win Rate</div>
+        <div class="stat-card-name" title="${worst.name}">${shortName(worst.name)}</div>
+        <div class="stat-card-value loss">${worst.wr.toFixed(1)}% · ${worst.total} matches</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Most Played</div>
+        <div class="stat-card-name" title="${mostPlayed.name}">${shortName(mostPlayed.name)}</div>
+        <div class="stat-card-value neutral">${mostPlayed.total.toLocaleString()} matches</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Legends Tracked</div>
+        <div class="stat-card-name">40 Legends</div>
+        <div class="stat-card-value neutral">${TOTAL.toLocaleString()} total matchups</div>
+      </div>`;
+  }
+
+  function setTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('raw-panel').style.display    = tab === 'raw'     ? '' : 'none';
+    document.getElementById('raw-controls').style.display = tab === 'raw'     ? '' : 'none';
+    document.getElementById('curated-panel').style.display = tab === 'curated' ? '' : 'none';
+  }
+
+  init();
+</script>
+</body>
+</html>
